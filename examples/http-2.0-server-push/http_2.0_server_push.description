@@ -1,2 +1,2 @@
-// This example demonstrates sending and receiving HTTP/2 Server Push messages in Ballerina HTTP Library. 
-// HTTP/2 Server Push messages allow the server to send resources to the client before the client requests for it. 
+// In this example, messages are sent and received using HTTP/2 Server Push.
+// HTTP/2 Server Push messages allow the server to send resources to the client before the client requests for it.
