@@ -1,2 +1,2 @@
-// Ballerina natively supports connecting to the Ballerina Message Broker. In this example, you make a durable topic
+// Ballerina natively supports connecting to the Message Broker. In this example, you make a durable topic
 // subscriber.
