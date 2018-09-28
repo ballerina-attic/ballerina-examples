@@ -109,6 +109,7 @@ script:
 - ballerina test http-caching-client
 - ballerina test http-circuit-breaker
 - ballerina test http-client-endpoint
+- ballerina test http-compression
 - ballerina test http-cors
 - ballerina test http-data-binding
 - ballerina test http-failover
