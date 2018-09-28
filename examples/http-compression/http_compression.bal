@@ -5,8 +5,8 @@ endpoint http:Listener listenerEndpoint {
     port: 9090
 };
 
-// Since compression behaviour of service is set as COMPRESSION_AUTO, entity body compression is done according
-// to the scheme indicated in Accept-Encoding request header. When particular header is not present or the
+// Since compression behaviour of the service is set as COMPRESSION_AUTO, entity body compression is done according
+// to the scheme indicated in `Accept-Encoding` request header. When the header is not present or the
 // header value is "identity", compression is not performed.
 @http:ServiceConfig {
     compression: {
@@ -19,13 +19,13 @@ service<http:Service> autoCompress bind listenerEndpoint {
         path: "/"
     }
     invokeEndpoint(endpoint caller, http:Request req) {
-        http:Response response = new;
-        response.setJsonPayload({ "Type": "Auto compression" });
-        caller->respond(response) but { error e => log:printError("Error sending response", err = e) };
+        caller->respond({ "Type": "Auto compression" }) but {
+            error e => log:printError("Error sending response", err = e)
+        };
     }
 }
 
-// COMPRESSION_ALWAYS will gurantee a compressed response entity body. Compression scheme is set to the
+// COMPRESSION_ALWAYS will guarantee a compressed response entity body. Compression scheme is set to the
 // value indicated in Accept-Encoding request header. When particular header is not present or the header
 // value is "identity", encoding is done using "gzip" scheme.
 // By default ballerina compresses any MIME type unless certain types are mentioned under "contentTypes".
@@ -40,18 +40,18 @@ service<http:Service> autoCompress bind listenerEndpoint {
 service<http:Service> alwaysCompress bind listenerEndpoint {
 
     // Since compression is only constrained to "text/plain" MIME type,
-    // getJson resource's response entity body will not get compressed.
+    // `getJson` resource's response entity body will not get compressed.
     getJson(endpoint caller, http:Request req) {
-        http:Response response = new;
-        response.setJsonPayload({ "Type": "Always but constrained by content-type" });
-        caller->respond(response) but { error e => log:printError("Error sending response", err = e) };
+        caller->respond({ "Type": "Always but constrained by content-type" }) but {
+            error e => log:printError("Error sending response", err = e)
+        };
     }
 
     //The response entity body will always get compressed as MIME type is matched.
     getString(endpoint caller, http:Request req) {
-        http:Response response = new;
-        response.setTextPayload("Type : This is a string");
-        caller->respond(response) but { error e => log:printError("Error sending response", err = e) };
+        caller->respond("Type : This is a string") but {
+            error e => log:printError("Error sending response", err = e)
+        };
     }
 }
 
@@ -70,13 +70,22 @@ service<http:Service> passthrough bind { port: 9092 } {
         path: "/"
     }
     getCompressed(endpoint caller, http:Request req) {
-        http:Response clientResponse = check clientEndpoint->post("/backend/echo", untaint req);
-        caller->respond(clientResponse) but { error e => log:printError("Error sending response", err = e) };
+        var result = clientEndpoint->post("/backend/echo", untaint req);
+        match result {
+            http:Response clientResponse => {
+                caller->respond(clientResponse) but {
+                    error e => log:printError("Error sending response", err = e)
+                };
+            }
+            error responseError => {
+                caller->respond({ "error": "error occurred while invoking the service" }) but {
+                    error e => log:printError("Error sending response", err = e) };
+            }
+        }
     }
 }
 
-
-// The compression behaviour of service is inferred by its default value which is COMPRESSION_AUTO
+// The compression behaviour of service is inferred by its default value that is COMPRESSION_AUTO
 service<http:Service> backend bind listenerEndpoint {
     echo(endpoint caller, http:Request req) {
         string value;
