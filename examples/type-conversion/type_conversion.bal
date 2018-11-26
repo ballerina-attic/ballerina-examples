@@ -32,6 +32,7 @@ public function main() {
     io:println(boolVal);
 
     // This is a `string` to `boolean` conversion.
+    // This is a safe conversion since `string true` always evaluates to `boolean true`.
     strVal = "true";
     boolVal = <boolean>strVal;
     io:println(boolVal);
