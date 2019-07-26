@@ -22,5 +22,5 @@ public function main() {
 
     // This initialization is useful when you need to initialize a different type on the right side.
     Person p3 = new Person();
-    io:println(p2);
+    io:println(p3);
 }
